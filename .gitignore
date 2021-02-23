@@ -5,3 +5,18 @@ __pycache__
 .python-version
 output/*
 metadata/*
+
+
+# jupyter
+
+.ipynb_checkpoints
+
+.ipython/
+
+.jupyter/
+
+.local/
+.env
+.env
+
+.idea/
