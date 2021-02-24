@@ -16,9 +16,13 @@
 
 # # Prevalence of PRIMIS codelists
 
+# +
 import pandas as pd
 import numpy as np
 import os
+
+suffix = f"_{os.environ.get('OPENSAFELY_BACKEND', 'tpp')}"
+# -
 
 # ### Load data
 
@@ -56,4 +60,6 @@ for c in cols_recent:
 # summarise by age and gender and suppress low numbers
 out = df1[cols_allyears].groupby(["ageband", "sex"]).count().transpose().replace([0,1,2,3,4],0)
 out["total"] = out.sum(axis=1)
+
+out.to_csv(os.path.join("..","released-outputs",f"code-count-by-age-and-sex{suffix}.csv"))
 out
