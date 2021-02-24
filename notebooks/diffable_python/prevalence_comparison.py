@@ -22,6 +22,7 @@ import numpy as np
 import os
 
 suffix = f"_{os.environ.get('OPENSAFELY_BACKEND', 'tpp')}"
+os.makedirs(os.path.join("..","safe-outputs"), exist_ok=True)
 # -
 
 # ### Load data
@@ -61,5 +62,5 @@ for c in cols_recent:
 out = df1[cols_allyears].groupby(["ageband", "sex"]).count().transpose().replace([0,1,2,3,4],0)
 out["total"] = out.sum(axis=1)
 
-out.to_csv(os.path.join("..","released-outputs",f"code-count-by-age-and-sex{suffix}.csv"))
+out.to_csv(os.path.join("..","safe-outputs",f"code-count-by-age-and-sex{suffix}.csv"))
 out

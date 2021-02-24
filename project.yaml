@@ -17,5 +17,5 @@ actions:
     outputs:
       moderately_sensitive:
         notebook: output/prevalence_comparison.html 
-        table: released-outputs/*
+        table: safe-outputs/*
 
