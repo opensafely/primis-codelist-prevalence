@@ -43,18 +43,20 @@ study = StudyDefinition(
         "incidence": 0.1,
     },
 
-    population=patients.all(),
+    population=patients.satisfying("age >= 16 AND age <= 120"),
 
     age=patients.age_as_of(
-        "2021-01-01",
+        "2021-03-31",  # PRIMIS REF_DAT
         return_expectations={
-            "int": {'distribution': 'normal', 'mean': 40, 'stddev': 20},
+            "int": {"distribution": "population_ages"},
+            "rate": "universal",
         },
     ),
 
     sex=patients.sex(
         return_expectations={
-            "category": {'ratios': {'F': 0.495, 'M': 0.495, '': 0.01}},
+            "category": {"ratios": {"F": 0.49, "M": 0.49, "U": 0.01, "I": 0.01}},
+            "rate": "universal",
         },
     ),
     """.strip()
