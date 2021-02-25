@@ -43,7 +43,14 @@ study = StudyDefinition(
         "incidence": 0.1,
     },
 
-    population=patients.satisfying("age >= 16 AND age <= 120"),
+    population=patients.satisfying("registered AND age >= 16 AND age <= 120"),
+
+    registered=patients.registered_as_of(
+        "2020-03-31",  # PRIMIS REF_DAT
+        return_expectations={
+            "incidence": 0.95,
+        },
+    ),
 
     age=patients.age_as_of(
         "2021-03-31",  # PRIMIS REF_DAT
