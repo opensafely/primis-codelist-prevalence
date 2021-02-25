@@ -70,7 +70,7 @@ out2
 # +
 # for codes that are only relevant if recent (pregnancy/delivery), remove any older dates
 for c in cols_recent:
-    df1[(df1[c]<2020)] = np.nan
+    df1.loc[(df1[c]<2020), c] = np.nan
 
 # summarise by age and gender
 out = df1[cols_allyears].groupby(["ageband", "sex"]).count().transpose()
