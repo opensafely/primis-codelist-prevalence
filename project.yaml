@@ -10,6 +10,13 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/input.csv
+        
+  generate_study_population_with_codes:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_with_codes
+    outputs:
+      highly_sensitive:
+        cohort: output/input_with_codes.csv
+
 
   generate_notebook:
     run: jupyter:latest jupyter nbconvert /workspace/notebooks/prevalence_comparison.ipynb --execute --to html --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400
