@@ -109,7 +109,14 @@ for c in out.columns.drop(["sex", "ageband"]):
     out = out.join(out2.transpose())    
 
     # calculate rates
-    out["rate_per_1000"] = (1000*(out["patient_count"]/out["total_population"])).round(1)
+    out["rate_per_1000"] = (1000*(out["patient_count"]/out["total_population"]))
+    
+    # round based on values
+    dp = 1
+    if out["rate_per_1000"].max() <1:
+        dp = 2
+    out["rate_per_1000"] = out["rate_per_1000"].round(dp)
+    
     out = out.drop(["patient_count","total_population"], 1)
 
     display(out)
