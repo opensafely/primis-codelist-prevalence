@@ -32,8 +32,8 @@ dtypes={"sex":"category"}
 
 df = pd.read_csv(os.path.join("..","output","input_with_codes.csv"), dtype=dtypes)
 
-if hashed_organisation in df.columns:
-    df = df.drop(hashed_organisation)
+if "hashed_organisation" in df.columns:
+    df = df.drop("hashed_organisation", axis=1)
 
 for col in df.columns:
     if col in ["patient_id", "age", "sex"]:
