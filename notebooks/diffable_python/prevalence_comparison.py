@@ -28,13 +28,18 @@ os.makedirs(os.path.join("..","safe-outputs"), exist_ok=True)
 # ### Load data
 
 # +
-df = pd.read_csv(os.path.join("..","output","input.csv"))
+# import first row to get col names
+df_head = pd.read_csv(os.path.join("..","output","input.csv"), nrows=1)
 
-if "hashed_organisation" in df.columns:
-    df = df.drop("hashed_organisation", axis=1)
+# filter out columns not needed
+cols_all = df_head.columns
+cols_to_use = [c for c in cols_all if c not in ["hashed_organisation", "patient_id"]]
+
+# import full dataset without columns not needed
+df = pd.read_csv(os.path.join("..","output","input.csv"), usecols=cols_to_use)
 
 for col in df.columns:
-    if col in ["patient_id", "age", "sex"]:
+    if col in ["age", "sex"]:
         continue
     # Most columns only contain years or NaN so we can store them as
     # float16s, which saves a lot of memory
@@ -54,6 +59,9 @@ df['ageband'] = np.select(conditions, choices, default=np.nan)
 
 # filter to largest sex groups
 df['sex'] = df['sex'].replace(['I','U'], np.nan)
+
+# add a constant column
+df['index'] = 1
 # -
 
 # ### Summarise data
@@ -69,7 +77,7 @@ df1 = df.copy().loc[(df["sex"].isin(["F","M"])) & (df["ageband"].isin(agebands))
 
 # +
 
-out2 = df1.groupby(["ageband", "sex"])[["patient_id"]].nunique().rename(columns={"patient_id":"total_population"}).transpose()
+out2 = df1.groupby(["ageband", "sex"])[["index"]].count().rename(columns={"index":"total_population"}).transpose()
 
 # calculate total population across all ages and sexes
 out2["total"] = out2.sum(axis=1)
