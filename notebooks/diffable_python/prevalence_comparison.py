@@ -7,7 +7,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.10.2
+#       jupytext_version: 1.3.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -16,7 +16,7 @@
 
 # # Prevalence of PRIMIS codelists
 
-# + trusted=true
+# +
 import pandas as pd
 import numpy as np
 import os
@@ -27,8 +27,12 @@ os.makedirs(os.path.join("..","safe-outputs"), exist_ok=True)
 
 # ### Load data
 
-# + trusted=true
+# +
 df = pd.read_csv(os.path.join("..","output","input.csv"))
+
+if hashed_organisation in df.columns:
+    df = df.drop(hashed_organisation)
+
 for col in df.columns:
     if col in ["patient_id", "age", "sex"]:
         continue
@@ -39,7 +43,7 @@ for col in df.columns:
 
 # ### Create ageband
 
-# + trusted=true
+# +
 agebands = ['16-39', '40-69', '70+']
 conditions = [
     (df['age'] >= 16) & (df['age'] < 40),
@@ -54,19 +58,16 @@ df['sex'] = df['sex'].replace(['I','U'], np.nan)
 
 # ### Summarise data
 
-# + trusted=true
 # list columns of interest 
 cols_allyears = [c for c in df.columns if c not in ["age","patient_id"]]
 cols_recent = ["preg", "pregdel"]
 
-# + trusted=true
 # filter to valid sexes and agegroups only
 df1 = df.copy().loc[(df["sex"].isin(["F","M"])) & (df["ageband"].isin(agebands))]
-# -
 
 # ### Calculate population denominators
 
-# + trusted=true
+# +
 
 out2 = df1.groupby(["ageband", "sex"])[["patient_id"]].nunique().rename(columns={"patient_id":"total_population"}).transpose()
 
@@ -78,7 +79,7 @@ out2
 
 # ### Codelist counts
 
-# + trusted=true
+# +
 # for codes that are only relevant if recent (pregnancy/delivery), remove any older dates
 for c in cols_recent:
     df1.loc[(df1[c]<2020), c] = np.nan
@@ -100,7 +101,7 @@ out.tail()
 
 # ### Codelist prevalence rates
 
-# + trusted=true
+# +
 # calculate rates
 for i in out.index.drop("total_population"):
     out.loc[i] = (1000*out.loc[i]/out.loc["total_population"]).round(1)
