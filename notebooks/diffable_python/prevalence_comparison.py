@@ -60,8 +60,6 @@ df['ageband'] = np.select(conditions, choices, default=np.nan)
 # filter to largest sex groups
 df['sex'] = df['sex'].replace(['I','U'], np.nan)
 
-# add a constant column
-df['index'] = 1
 # -
 
 # ### Summarise data
@@ -77,7 +75,7 @@ df1 = df.copy().loc[(df["sex"].isin(["F","M"])) & (df["ageband"].isin(agebands))
 
 # +
 
-out2 = df1.groupby(["ageband", "sex"])[["index"]].count().rename(columns={"index":"total_population"}).transpose()
+out2 = df1.groupby(["ageband", "sex"])[["registered"]].count().rename(columns={"registered":"total_population"}).transpose()
 
 # calculate total population across all ages and sexes
 out2["total"] = out2.sum(axis=1)
