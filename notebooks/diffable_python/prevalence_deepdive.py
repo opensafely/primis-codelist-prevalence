@@ -14,7 +14,7 @@
 #     name: python3
 # ---
 
-# # Prevalence of PRIMIS codelists
+# # Prevalence of PRIMIS codelists - by individual codes
 
 # +
 import pandas as pd
@@ -80,22 +80,22 @@ df1 = df.copy().loc[(df["sex"].isin(["F","M"])) & (df["ageband"].isin(agebands))
 
 # +
 
-out2 = df1.groupby(["ageband", "sex"])[["registered"]].count().rename(columns={"registered":"total_population"}).transpose()
+pop_totals = df1.groupby(["ageband", "sex"])[["registered"]].count().rename(columns={"registered":"total_population"}).transpose()
 
 # calculate total population across all ages and sexes
-out2["total"] = out2.sum(axis=1)
+pop_totals["total"] = pop_totals.sum(axis=1)
 
-out2
+pop_totals
 # -
 
 # ### Filtering
 
 # +
-# for codes that are only relevant if recent (pregnancy/delivery), remove any older dates
+# for codes that are only relevant if recent (pregnancy/delivery), remove any older or missing dates
 
 for c in cols_recent:
-    df1.loc[(df1[f"{c}_date"]<2020), c] = np.nan
-    df1.loc[(df1[f"{c}_date"]<2020), f"{c}_date"] = np.nan
+    df1.loc[~(df1[f"{c}_date"].isin([2020,2021])), c] = np.nan
+    df1.loc[~(df1[f"{c}_date"].isin([2020,2021])), f"{c}_date"] = np.nan
 # -
 
 # ### Codelist counts - breakdown by individual code
@@ -121,7 +121,7 @@ for c in out.columns.drop(["sex", "ageband"]):
     
     # join population denominators
     out = out.set_index(["ageband", "sex"])
-    out = out.join(out2.transpose())    
+    out = out.join(pop_totals.transpose())    
 
     # calculate rates
     out["rate_per_1000"] = (1000*(out["patient_count"]/out["total_population"]))
@@ -156,7 +156,7 @@ out = out.replace([0,1,2,3,4],0)
 out["total"] = out.sum(axis=1)
 
 # add population denominators
-out = pd.concat([out,out2])
+out = pd.concat([out,pop_totals])
 
 
 # calculate rates
