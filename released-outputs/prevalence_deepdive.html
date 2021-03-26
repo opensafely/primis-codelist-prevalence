@@ -13077,7 +13077,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Prevalence-of-PRIMIS-codelists">Prevalence of PRIMIS codelists<a class="anchor-link" href="#Prevalence-of-PRIMIS-codelists">&#182;</a></h1>
+<h1 id="Prevalence-of-PRIMIS-codelists---by-individual-codes">Prevalence of PRIMIS codelists - by individual codes<a class="anchor-link" href="#Prevalence-of-PRIMIS-codelists---by-individual-codes">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13216,12 +13216,12 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out2</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;ageband&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">])[[</span><span class="s2">&quot;registered&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;registered&quot;</span><span class="p">:</span><span class="s2">&quot;total_population&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pop_totals</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;ageband&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">])[[</span><span class="s2">&quot;registered&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;registered&quot;</span><span class="p">:</span><span class="s2">&quot;total_population&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
 <span class="c1"># calculate total population across all ages and sexes</span>
-<span class="n">out2</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out2</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pop_totals</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pop_totals</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">out2</span>
+<span class="n">pop_totals</span>
 </pre></div>
 
     </div>
@@ -13307,11 +13307,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># for codes that are only relevant if recent (pregnancy/delivery), remove any older dates</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># for codes that are only relevant if recent (pregnancy/delivery), remove any older or missing dates</span>
 
 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cols_recent</span><span class="p">:</span>
-    <span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df1</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2">_date&quot;</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">2020</span><span class="p">),</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df1</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2">_date&quot;</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">2020</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2">_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2">_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">2020</span><span class="p">,</span><span class="mi">2021</span><span class="p">])),</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2">_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">2020</span><span class="p">,</span><span class="mi">2021</span><span class="p">])),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{c}</span><span class="s2">_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 </pre></div>
 
     </div>
@@ -13351,7 +13351,7 @@ div#notebook {
     
     <span class="c1"># join population denominators</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">&quot;ageband&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">])</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>    
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pop_totals</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>    
 
     <span class="c1"># calculate rates</span>
     <span class="n">out</span><span class="p">[</span><span class="s2">&quot;rate_per_1000&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1000</span><span class="o">*</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;patient_count&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;total_population&quot;</span><span class="p">]))</span>
@@ -14394,7 +14394,7 @@ div#notebook {
   </thead>
   <tbody>
     <tr>
-      <th rowspan="16" valign="top">16-39</th>
+      <th rowspan="15" valign="top">16-39</th>
       <th>F</th>
       <td>11687002</td>
       <td>3.3</td>
@@ -14456,11 +14456,6 @@ div#notebook {
     </tr>
     <tr>
       <th>M</th>
-      <td>34842007</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
       <td>51885006</td>
       <td>0.0</td>
     </tr>
@@ -14488,7 +14483,7 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>48782003</td>
-      <td>0.6</td>
+      <td>0.5</td>
     </tr>
     <tr>
       <th>F</th>
@@ -14508,21 +14503,21 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>127365008</td>
-      <td>0.3</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>127366009</td>
       <td>0.2</td>
     </tr>
     <tr>
       <th>F</th>
-      <td>169711001</td>
+      <td>127366009</td>
       <td>0.1</td>
     </tr>
     <tr>
       <th>F</th>
       <td>268445003</td>
+      <td>0.1</td>
+    </tr>
+    <tr>
+      <th>F</th>
+      <td>424525001</td>
       <td>0.1</td>
     </tr>
     <tr>
@@ -14546,54 +14541,19 @@ div#notebook {
       <td>0.0</td>
     </tr>
     <tr>
-      <th rowspan="10" valign="top">70+</th>
+      <th rowspan="3" valign="top">70+</th>
       <th>F</th>
-      <td>11687002</td>
+      <td>51885006</td>
       <td>0.0</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>48782003</td>
-      <td>0.3</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>53881005</td>
-      <td>0.1</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>72892002</td>
-      <td>0.1</td>
     </tr>
     <tr>
       <th>F</th>
       <td>77386006</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>127365008</td>
-      <td>0.1</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>127366009</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>F</th>
-      <td>127367000</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>127368005</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>169574001</td>
+      <td>307534009</td>
       <td>0.0</td>
     </tr>
   </tbody>
@@ -14664,7 +14624,7 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>169826009</td>
-      <td>5.2</td>
+      <td>5.1</td>
     </tr>
     <tr>
       <th>F</th>
@@ -14689,7 +14649,22 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>309469004</td>
-      <td>4.8</td>
+      <td>4.6</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>3944006</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>14094001</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>17369002</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>M</th>
@@ -14698,7 +14673,22 @@ div#notebook {
     </tr>
     <tr>
       <th>M</th>
-      <td>61586001</td>
+      <td>51885006</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>58703003</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>77386006</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>M</th>
+      <td>169548007</td>
       <td>0.0</td>
     </tr>
     <tr>
@@ -14708,41 +14698,11 @@ div#notebook {
     </tr>
     <tr>
       <th>M</th>
-      <td>169836001</td>
+      <td>237364002</td>
       <td>0.0</td>
     </tr>
     <tr>
-      <th>M</th>
-      <td>169961004</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
-      <td>177184002</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
-      <td>200148001</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
-      <td>200149009</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
-      <td>281050002</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th>M</th>
-      <td>309469004</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th rowspan="17" valign="top">40-69</th>
+      <th rowspan="15" valign="top">40-69</th>
       <th>F</th>
       <td>11687002</td>
       <td>0.3</td>
@@ -14750,12 +14710,12 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>17369002</td>
-      <td>1.0</td>
+      <td>0.9</td>
     </tr>
     <tr>
       <th>F</th>
       <td>48782003</td>
-      <td>0.4</td>
+      <td>0.3</td>
     </tr>
     <tr>
       <th>F</th>
@@ -14765,12 +14725,12 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>133906008</td>
-      <td>0.7</td>
+      <td>0.6</td>
     </tr>
     <tr>
       <th>F</th>
       <td>169826009</td>
-      <td>0.4</td>
+      <td>0.3</td>
     </tr>
     <tr>
       <th>F</th>
@@ -14780,17 +14740,17 @@ div#notebook {
     <tr>
       <th>F</th>
       <td>177184002</td>
-      <td>0.4</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>200144004</td>
       <td>0.3</td>
     </tr>
     <tr>
       <th>F</th>
       <td>274130007</td>
       <td>0.3</td>
+    </tr>
+    <tr>
+      <th>F</th>
+      <td>309469004</td>
+      <td>0.2</td>
     </tr>
     <tr>
       <th>M</th>
@@ -14814,83 +14774,43 @@ div#notebook {
     </tr>
     <tr>
       <th>M</th>
-      <td>169826009</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
-      <td>169836001</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>M</th>
       <td>418090003</td>
       <td>0.0</td>
     </tr>
     <tr>
-      <th rowspan="13" valign="top">70+</th>
+      <th rowspan="7" valign="top">70+</th>
       <th>F</th>
-      <td>17369002</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>34801009</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>48782003</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>53881005</td>
-      <td>0.1</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>77386006</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>169826009</td>
-      <td>0.2</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>169836001</td>
-      <td>0.1</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>177184002</td>
-      <td>0.5</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>200144004</td>
-      <td>0.1</td>
-    </tr>
-    <tr>
-      <th>F</th>
-      <td>398307005</td>
-      <td>0.1</td>
-    </tr>
-    <tr>
-      <th>M</th>
       <td>44979007</td>
       <td>0.0</td>
     </tr>
     <tr>
-      <th>M</th>
-      <td>169826009</td>
+      <th>F</th>
+      <td>51885006</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>F</th>
+      <td>77386006</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>F</th>
+      <td>169836001</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>F</th>
+      <td>177184002</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>F</th>
+      <td>307534009</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>M</th>
-      <td>169836001</td>
+      <td>44979007</td>
       <td>0.0</td>
     </tr>
   </tbody>
@@ -15727,7 +15647,7 @@ div#notebook {
 <span class="n">out</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># add population denominators</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">out</span><span class="p">,</span><span class="n">out2</span><span class="p">])</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">out</span><span class="p">,</span><span class="n">pop_totals</span><span class="p">])</span>
 
 
 <span class="c1"># calculate rates</span>
