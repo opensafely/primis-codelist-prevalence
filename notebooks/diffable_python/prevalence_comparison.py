@@ -102,7 +102,12 @@ out["total"] = out.sum(axis=1)
 # add population denominators
 out = pd.concat([out,out2])
 
-out.tail()
+display(out.tail())
+
+# export to csv
+out = out.replace([0,1,2,3,4], "<5")
+out.to_csv(os.path.join("..","safe-outputs",f"code-counts-by-age-and-sex{suffix}.csv"))
+
 # -
 
 # ### Codelist prevalence rates
