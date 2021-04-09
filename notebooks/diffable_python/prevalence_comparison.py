@@ -102,7 +102,12 @@ out["total"] = out.sum(axis=1)
 # add population denominators
 out = pd.concat([out,out2])
 
-out.tail()
+display(out.tail())
+
+# export to csv
+out_exp = out.copy().replace([0,1,2,3,4], "<5")
+out_exp.to_csv(os.path.join("..","safe-outputs",f"code-counts-by-age-and-sex{suffix}.csv"))
+
 # -
 
 # ### Codelist prevalence rates
@@ -110,8 +115,8 @@ out.tail()
 # +
 # calculate rates
 for i in out.index.drop("total_population"):
-    out.loc[i] = (1000*out.loc[i]/out.loc["total_population"]).round(1)
-
+    out.loc[i] = 1000*(out.loc[i]/out.loc["total_population"]).round(1)
+    
 # export to csv    
 out.to_csv(os.path.join("..","safe-outputs",f"code-prevalence-by-age-and-sex{suffix}.csv"))
 
