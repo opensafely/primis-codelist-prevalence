@@ -105,8 +105,8 @@ out = pd.concat([out,out2])
 display(out.tail())
 
 # export to csv
-out = out.replace([0,1,2,3,4], "<5")
-out.to_csv(os.path.join("..","safe-outputs",f"code-counts-by-age-and-sex{suffix}.csv"))
+out_exp = out.copy().replace([0,1,2,3,4], "<5")
+out_exp.to_csv(os.path.join("..","safe-outputs",f"code-counts-by-age-and-sex{suffix}.csv"))
 
 # -
 
@@ -115,8 +115,8 @@ out.to_csv(os.path.join("..","safe-outputs",f"code-counts-by-age-and-sex{suffix}
 # +
 # calculate rates
 for i in out.index.drop("total_population"):
-    out.loc[i] = (1000*out.loc[i]/out.loc["total_population"]).round(1)
-
+    out.loc[i] = 1000*(out.loc[i]/out.loc["total_population"]).round(1)
+    
 # export to csv    
 out.to_csv(os.path.join("..","safe-outputs",f"code-prevalence-by-age-and-sex{suffix}.csv"))
 
