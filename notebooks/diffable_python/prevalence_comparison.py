@@ -94,7 +94,7 @@ for c in cols_recent:
 out = df1[cols_allyears].groupby(["ageband", "sex"]).count().transpose()
 
 # suppress low numbers
-out = out.replace([0,1,2,3,4],0)
+out = out.replace([0,1,2,3,4,5],0)
 
 # calculate total count for each codelist across all ages and sexes
 out["total"] = out.sum(axis=1)
@@ -107,7 +107,19 @@ display(out.tail())
 # export to csv
 
 out_exp = out.copy()
-out_exp = 5*((out_exp/5).round(0)).astype(int).replace([0,5], "<8")
+out_exp = 5*((out_exp/5).round(0)).astype(int)
+out_exp = out_exp.replace([0,5], "<8")
+
+# additional check for small numbers of suppressed small numbers
+for i in out_exp.index:
+    check = out_exp.transpose().groupby(i).agg({i:"count"})
+    if "<8" in check.index:
+        # if only 1-2 suppressed value(s) appears in row, apply additional suppression
+        if (check.loc["<8"][0]<=2) & (10 in check.index):
+            out_exp = out_exp.replace(["<8", 10], "<13")
+        elif (check.loc["<8"][0]<=2) & (10 not in check.index):
+            out_exp = out_exp.replace(["<8", 15], "<18")
+
 out_exp.to_csv(os.path.join("..","safe-outputs",f"code-counts-by-age-and-sex{suffix}.csv"))
 
 # -
