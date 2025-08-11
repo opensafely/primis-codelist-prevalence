@@ -1,16 +1,13 @@
-# OpenSAFELY Research Template
+# OpenSAFELY PRIMIS codelist prevalence
 
-This is a template repository for making new OpenSAFELY resarch projects.
+Counts/rates of codes used for defining COVID-19 vaccine eligiblity and groupings, compared between EMIS and TPP practices (collectively), to check for any systematic differences which may impact how many patients appear eligible.
 
-# _title goes here_
-
-This is the code and configuration for our paper, _name goes here_
-
-* The paper is [here]()
-* Raw model outputs, including charts, crosstabs, etc, are in `released_outputs/`
-* If you are interested in how we defined our variables, take a look at the [study definition](analysis/study_definition.py); this is written in `python`, but non-programmers should be able to understand what is going on there
-* If you are interested in how we defined our code lists, look in the [codelists folder](./codelists/).
-* Developers and epidemiologists interested in the framework should review [the OpenSAFELY documentation](https://docs.opensafely.org)
+* We have used Python Notebooks to present the findings - see the [released-outputs folder](./released-outputs/).
+* There is a high-level count of each codelist by age-sex groups in EMIS vs TPP and separately a deepdive which looks at each individual code within those codelists which showed the biggest differences.
+* CSVs are also in [released-outputs folder](./released-outputs/).
+* The data extraction is defined in the [study definition](analysis/study_definition.py); this is written in `python`, but non-programmers should be able to understand what is going on there; there is a separate study definition for the individual code analysis.
+* The code lists are in the [codelists folder](./codelists/).
+* Notebook templates (with dummy data) are in the [notebooks folder](./notebooks/).
 
 # About the OpenSAFELY framework
 
